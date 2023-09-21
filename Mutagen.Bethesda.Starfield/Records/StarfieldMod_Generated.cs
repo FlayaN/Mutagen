@@ -81,6 +81,7 @@ namespace Mutagen.Bethesda.Starfield
             _Debris_Object = new StarfieldGroup<Debris>(this);
             _ActorValueModulations_Object = new StarfieldGroup<ActorValueModulation>(this);
             _BiomeSwaps_Object = new StarfieldGroup<BiomeSwap>(this);
+            _BoneModifiers_Object = new StarfieldGroup<BoneModifier>(this);
             CustomCtor();
         }
         partial void CustomCtor();
@@ -233,6 +234,13 @@ namespace Mutagen.Bethesda.Starfield
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IStarfieldGroupGetter<IBiomeSwapGetter> IStarfieldModGetter.BiomeSwaps => _BiomeSwaps_Object;
         #endregion
+        #region BoneModifiers
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private StarfieldGroup<BoneModifier> _BoneModifiers_Object;
+        public StarfieldGroup<BoneModifier> BoneModifiers => _BoneModifiers_Object;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IStarfieldGroupGetter<IBoneModifierGetter> IStarfieldModGetter.BoneModifiers => _BoneModifiers_Object;
+        #endregion
 
         #region To String
 
@@ -293,6 +301,7 @@ namespace Mutagen.Bethesda.Starfield
                 this.Debris = new MaskItem<TItem, StarfieldGroup.Mask<TItem>?>(initialValue, new StarfieldGroup.Mask<TItem>(initialValue));
                 this.ActorValueModulations = new MaskItem<TItem, StarfieldGroup.Mask<TItem>?>(initialValue, new StarfieldGroup.Mask<TItem>(initialValue));
                 this.BiomeSwaps = new MaskItem<TItem, StarfieldGroup.Mask<TItem>?>(initialValue, new StarfieldGroup.Mask<TItem>(initialValue));
+                this.BoneModifiers = new MaskItem<TItem, StarfieldGroup.Mask<TItem>?>(initialValue, new StarfieldGroup.Mask<TItem>(initialValue));
             }
 
             public Mask(
@@ -316,7 +325,8 @@ namespace Mutagen.Bethesda.Starfield
                 TItem SurfacePatternStyles,
                 TItem Debris,
                 TItem ActorValueModulations,
-                TItem BiomeSwaps)
+                TItem BiomeSwaps,
+                TItem BoneModifiers)
             {
                 this.ModHeader = new MaskItem<TItem, StarfieldModHeader.Mask<TItem>?>(ModHeader, new StarfieldModHeader.Mask<TItem>(ModHeader));
                 this.GameSettings = new MaskItem<TItem, StarfieldGroup.Mask<TItem>?>(GameSettings, new StarfieldGroup.Mask<TItem>(GameSettings));
@@ -339,6 +349,7 @@ namespace Mutagen.Bethesda.Starfield
                 this.Debris = new MaskItem<TItem, StarfieldGroup.Mask<TItem>?>(Debris, new StarfieldGroup.Mask<TItem>(Debris));
                 this.ActorValueModulations = new MaskItem<TItem, StarfieldGroup.Mask<TItem>?>(ActorValueModulations, new StarfieldGroup.Mask<TItem>(ActorValueModulations));
                 this.BiomeSwaps = new MaskItem<TItem, StarfieldGroup.Mask<TItem>?>(BiomeSwaps, new StarfieldGroup.Mask<TItem>(BiomeSwaps));
+                this.BoneModifiers = new MaskItem<TItem, StarfieldGroup.Mask<TItem>?>(BoneModifiers, new StarfieldGroup.Mask<TItem>(BoneModifiers));
             }
 
             #pragma warning disable CS8618
@@ -371,6 +382,7 @@ namespace Mutagen.Bethesda.Starfield
             public MaskItem<TItem, StarfieldGroup.Mask<TItem>?>? Debris { get; set; }
             public MaskItem<TItem, StarfieldGroup.Mask<TItem>?>? ActorValueModulations { get; set; }
             public MaskItem<TItem, StarfieldGroup.Mask<TItem>?>? BiomeSwaps { get; set; }
+            public MaskItem<TItem, StarfieldGroup.Mask<TItem>?>? BoneModifiers { get; set; }
             #endregion
 
             #region Equals
@@ -404,6 +416,7 @@ namespace Mutagen.Bethesda.Starfield
                 if (!object.Equals(this.Debris, rhs.Debris)) return false;
                 if (!object.Equals(this.ActorValueModulations, rhs.ActorValueModulations)) return false;
                 if (!object.Equals(this.BiomeSwaps, rhs.BiomeSwaps)) return false;
+                if (!object.Equals(this.BoneModifiers, rhs.BoneModifiers)) return false;
                 return true;
             }
             public override int GetHashCode()
@@ -430,6 +443,7 @@ namespace Mutagen.Bethesda.Starfield
                 hash.Add(this.Debris);
                 hash.Add(this.ActorValueModulations);
                 hash.Add(this.BiomeSwaps);
+                hash.Add(this.BoneModifiers);
                 return hash.ToHashCode();
             }
 
@@ -543,6 +557,11 @@ namespace Mutagen.Bethesda.Starfield
                     if (!eval(this.BiomeSwaps.Overall)) return false;
                     if (this.BiomeSwaps.Specific != null && !this.BiomeSwaps.Specific.All(eval)) return false;
                 }
+                if (BoneModifiers != null)
+                {
+                    if (!eval(this.BoneModifiers.Overall)) return false;
+                    if (this.BoneModifiers.Specific != null && !this.BoneModifiers.Specific.All(eval)) return false;
+                }
                 return true;
             }
             #endregion
@@ -655,6 +674,11 @@ namespace Mutagen.Bethesda.Starfield
                     if (eval(this.BiomeSwaps.Overall)) return true;
                     if (this.BiomeSwaps.Specific != null && this.BiomeSwaps.Specific.Any(eval)) return true;
                 }
+                if (BoneModifiers != null)
+                {
+                    if (eval(this.BoneModifiers.Overall)) return true;
+                    if (this.BoneModifiers.Specific != null && this.BoneModifiers.Specific.Any(eval)) return true;
+                }
                 return false;
             }
             #endregion
@@ -690,6 +714,7 @@ namespace Mutagen.Bethesda.Starfield
                 obj.Debris = this.Debris == null ? null : new MaskItem<R, StarfieldGroup.Mask<R>?>(eval(this.Debris.Overall), this.Debris.Specific?.Translate(eval));
                 obj.ActorValueModulations = this.ActorValueModulations == null ? null : new MaskItem<R, StarfieldGroup.Mask<R>?>(eval(this.ActorValueModulations.Overall), this.ActorValueModulations.Specific?.Translate(eval));
                 obj.BiomeSwaps = this.BiomeSwaps == null ? null : new MaskItem<R, StarfieldGroup.Mask<R>?>(eval(this.BiomeSwaps.Overall), this.BiomeSwaps.Specific?.Translate(eval));
+                obj.BoneModifiers = this.BoneModifiers == null ? null : new MaskItem<R, StarfieldGroup.Mask<R>?>(eval(this.BoneModifiers.Overall), this.BoneModifiers.Specific?.Translate(eval));
             }
             #endregion
 
@@ -792,6 +817,10 @@ namespace Mutagen.Bethesda.Starfield
                     {
                         BiomeSwaps?.Print(sb);
                     }
+                    if (printMask?.BoneModifiers?.Overall ?? true)
+                    {
+                        BoneModifiers?.Print(sb);
+                    }
                 }
             }
             #endregion
@@ -837,6 +866,7 @@ namespace Mutagen.Bethesda.Starfield
             public MaskItem<Exception?, StarfieldGroup.ErrorMask<Debris.ErrorMask>?>? Debris;
             public MaskItem<Exception?, StarfieldGroup.ErrorMask<ActorValueModulation.ErrorMask>?>? ActorValueModulations;
             public MaskItem<Exception?, StarfieldGroup.ErrorMask<BiomeSwap.ErrorMask>?>? BiomeSwaps;
+            public MaskItem<Exception?, StarfieldGroup.ErrorMask<BoneModifier.ErrorMask>?>? BoneModifiers;
             #endregion
 
             #region IErrorMask
@@ -887,6 +917,8 @@ namespace Mutagen.Bethesda.Starfield
                         return ActorValueModulations;
                     case StarfieldMod_FieldIndex.BiomeSwaps:
                         return BiomeSwaps;
+                    case StarfieldMod_FieldIndex.BoneModifiers:
+                        return BoneModifiers;
                     default:
                         throw new ArgumentException($"Index is out of range: {index}");
                 }
@@ -959,6 +991,9 @@ namespace Mutagen.Bethesda.Starfield
                         break;
                     case StarfieldMod_FieldIndex.BiomeSwaps:
                         this.BiomeSwaps = new MaskItem<Exception?, StarfieldGroup.ErrorMask<BiomeSwap.ErrorMask>?>(ex, null);
+                        break;
+                    case StarfieldMod_FieldIndex.BoneModifiers:
+                        this.BoneModifiers = new MaskItem<Exception?, StarfieldGroup.ErrorMask<BoneModifier.ErrorMask>?>(ex, null);
                         break;
                     default:
                         throw new ArgumentException($"Index is out of range: {index}");
@@ -1033,6 +1068,9 @@ namespace Mutagen.Bethesda.Starfield
                     case StarfieldMod_FieldIndex.BiomeSwaps:
                         this.BiomeSwaps = (MaskItem<Exception?, StarfieldGroup.ErrorMask<BiomeSwap.ErrorMask>?>?)obj;
                         break;
+                    case StarfieldMod_FieldIndex.BoneModifiers:
+                        this.BoneModifiers = (MaskItem<Exception?, StarfieldGroup.ErrorMask<BoneModifier.ErrorMask>?>?)obj;
+                        break;
                     default:
                         throw new ArgumentException($"Index is out of range: {index}");
                 }
@@ -1062,6 +1100,7 @@ namespace Mutagen.Bethesda.Starfield
                 if (Debris != null) return true;
                 if (ActorValueModulations != null) return true;
                 if (BiomeSwaps != null) return true;
+                if (BoneModifiers != null) return true;
                 return false;
             }
             #endregion
@@ -1108,6 +1147,7 @@ namespace Mutagen.Bethesda.Starfield
                 Debris?.Print(sb);
                 ActorValueModulations?.Print(sb);
                 BiomeSwaps?.Print(sb);
+                BoneModifiers?.Print(sb);
             }
             #endregion
 
@@ -1137,6 +1177,7 @@ namespace Mutagen.Bethesda.Starfield
                 ret.Debris = this.Debris.Combine(rhs.Debris, (l, r) => l.Combine(r));
                 ret.ActorValueModulations = this.ActorValueModulations.Combine(rhs.ActorValueModulations, (l, r) => l.Combine(r));
                 ret.BiomeSwaps = this.BiomeSwaps.Combine(rhs.BiomeSwaps, (l, r) => l.Combine(r));
+                ret.BoneModifiers = this.BoneModifiers.Combine(rhs.BoneModifiers, (l, r) => l.Combine(r));
                 return ret;
             }
             public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
@@ -1181,6 +1222,7 @@ namespace Mutagen.Bethesda.Starfield
             public StarfieldGroup.TranslationMask<Debris.TranslationMask>? Debris;
             public StarfieldGroup.TranslationMask<ActorValueModulation.TranslationMask>? ActorValueModulations;
             public StarfieldGroup.TranslationMask<BiomeSwap.TranslationMask>? BiomeSwaps;
+            public StarfieldGroup.TranslationMask<BoneModifier.TranslationMask>? BoneModifiers;
             #endregion
 
             #region Ctors
@@ -1226,6 +1268,7 @@ namespace Mutagen.Bethesda.Starfield
                 ret.Add((Debris != null ? Debris.OnOverall : DefaultOn, Debris?.GetCrystal()));
                 ret.Add((ActorValueModulations != null ? ActorValueModulations.OnOverall : DefaultOn, ActorValueModulations?.GetCrystal()));
                 ret.Add((BiomeSwaps != null ? BiomeSwaps.OnOverall : DefaultOn, BiomeSwaps?.GetCrystal()));
+                ret.Add((BoneModifiers != null ? BoneModifiers.OnOverall : DefaultOn, BoneModifiers?.GetCrystal()));
             }
 
             public static implicit operator TranslationMask(bool defaultOn)
@@ -1289,6 +1332,7 @@ namespace Mutagen.Bethesda.Starfield
             _Debris_Object = new StarfieldGroup<Debris>(this);
             _ActorValueModulations_Object = new StarfieldGroup<ActorValueModulation>(this);
             _BiomeSwaps_Object = new StarfieldGroup<BiomeSwap>(this);
+            _BoneModifiers_Object = new StarfieldGroup<BoneModifier>(this);
             CustomCtor();
         }
         public void AddRecords(
@@ -1375,6 +1419,10 @@ namespace Mutagen.Bethesda.Starfield
             {
                 this.BiomeSwaps.RecordCache.Set(rhsMod.BiomeSwaps.RecordCache.Items);
             }
+            if (mask?.BoneModifiers ?? true)
+            {
+                this.BoneModifiers.RecordCache.Set(rhsMod.BoneModifiers.RecordCache.Items);
+            }
         }
 
         public override void SyncRecordCount()
@@ -1405,6 +1453,7 @@ namespace Mutagen.Bethesda.Starfield
             count += Debris.RecordCache.Count > 0 ? 1 : default(uint);
             count += ActorValueModulations.RecordCache.Count > 0 ? 1 : default(uint);
             count += BiomeSwaps.RecordCache.Count > 0 ? 1 : default(uint);
+            count += BoneModifiers.RecordCache.Count > 0 ? 1 : default(uint);
             GetCustomRecordCount((customCount) => count += customCount);
             return count;
         }
@@ -1681,6 +1730,7 @@ namespace Mutagen.Bethesda.Starfield
         new StarfieldGroup<Debris> Debris { get; }
         new StarfieldGroup<ActorValueModulation> ActorValueModulations { get; }
         new StarfieldGroup<BiomeSwap> BiomeSwaps { get; }
+        new StarfieldGroup<BoneModifier> BoneModifiers { get; }
     }
 
     public partial interface IStarfieldModGetter :
@@ -1721,6 +1771,7 @@ namespace Mutagen.Bethesda.Starfield
         IStarfieldGroupGetter<IDebrisGetter> Debris { get; }
         IStarfieldGroupGetter<IActorValueModulationGetter> ActorValueModulations { get; }
         IStarfieldGroupGetter<IBiomeSwapGetter> BiomeSwaps { get; }
+        IStarfieldGroupGetter<IBoneModifierGetter> BoneModifiers { get; }
 
     }
 
@@ -2312,6 +2363,7 @@ namespace Mutagen.Bethesda.Starfield
         Debris = 18,
         ActorValueModulations = 19,
         BiomeSwaps = 20,
+        BoneModifiers = 21,
     }
     #endregion
 
@@ -2322,9 +2374,9 @@ namespace Mutagen.Bethesda.Starfield
 
         public static ProtocolKey ProtocolKey => ProtocolDefinition_Starfield.ProtocolKey;
 
-        public const ushort AdditionalFieldCount = 21;
+        public const ushort AdditionalFieldCount = 22;
 
-        public const ushort FieldCount = 21;
+        public const ushort FieldCount = 22;
 
         public static readonly Type MaskType = typeof(StarfieldMod.Mask<>);
 
@@ -2411,6 +2463,7 @@ namespace Mutagen.Bethesda.Starfield
             item.Debris.Clear();
             item.ActorValueModulations.Clear();
             item.BiomeSwaps.Clear();
+            item.BoneModifiers.Clear();
         }
         
         #region Mutagen
@@ -2428,6 +2481,7 @@ namespace Mutagen.Bethesda.Starfield
             obj.Races.RemapLinks(mapping);
             obj.Planets.RemapLinks(mapping);
             obj.ActorValueModulations.RemapLinks(mapping);
+            obj.BoneModifiers.RemapLinks(mapping);
         }
         
         public IEnumerable<IMajorRecord> EnumerateMajorRecords(IStarfieldMod obj)
@@ -2482,6 +2536,7 @@ namespace Mutagen.Bethesda.Starfield
             obj.Debris.Remove(keys);
             obj.ActorValueModulations.Remove(keys);
             obj.BiomeSwaps.Remove(keys);
+            obj.BoneModifiers.Remove(keys);
         }
         
         public void Remove(
@@ -2681,6 +2736,14 @@ namespace Mutagen.Bethesda.Starfield
                         type: type,
                         keys: keys);
                     break;
+                case "BoneModifier":
+                case "IBoneModifierGetter":
+                case "IBoneModifier":
+                case "IBoneModifierInternal":
+                    obj.BoneModifiers.Remove(
+                        type: type,
+                        keys: keys);
+                    break;
                 case "IIdleRelation":
                 case "IIdleRelationGetter":
                     Remove(obj, keys, typeof(IActionRecordGetter), throwIfUnknown: throwIfUnknown);
@@ -2798,6 +2861,13 @@ namespace Mutagen.Bethesda.Starfield
                     yield return item;
                 }
             }
+            if (obj.BoneModifiers is IAssetLinkContainer BoneModifierslinkCont)
+            {
+                foreach (var item in BoneModifierslinkCont.EnumerateListedAssetLinks())
+                {
+                    yield return item;
+                }
+            }
             yield break;
         }
         
@@ -2822,6 +2892,7 @@ namespace Mutagen.Bethesda.Starfield
             obj.Planets.RemapAssetLinks(mapping, queryCategories, linkCache);
             obj.Debris.RemapAssetLinks(mapping, queryCategories, linkCache);
             obj.ActorValueModulations.RemapAssetLinks(mapping, queryCategories, linkCache);
+            obj.BoneModifiers.RemapAssetLinks(mapping, queryCategories, linkCache);
         }
         
         #endregion
@@ -2887,6 +2958,7 @@ namespace Mutagen.Bethesda.Starfield
             ret.Debris = MaskItemExt.Factory(item.Debris.GetEqualsMask(rhs.Debris, include), include);
             ret.ActorValueModulations = MaskItemExt.Factory(item.ActorValueModulations.GetEqualsMask(rhs.ActorValueModulations, include), include);
             ret.BiomeSwaps = MaskItemExt.Factory(item.BiomeSwaps.GetEqualsMask(rhs.BiomeSwaps, include), include);
+            ret.BoneModifiers = MaskItemExt.Factory(item.BoneModifiers.GetEqualsMask(rhs.BoneModifiers, include), include);
         }
         
         public string Print(
@@ -3014,6 +3086,10 @@ namespace Mutagen.Bethesda.Starfield
             if (printMask?.BiomeSwaps?.Overall ?? true)
             {
                 item.BiomeSwaps?.Print(sb, "BiomeSwaps");
+            }
+            if (printMask?.BoneModifiers?.Overall ?? true)
+            {
+                item.BoneModifiers?.Print(sb, "BoneModifiers");
             }
         }
         
@@ -3192,6 +3268,14 @@ namespace Mutagen.Bethesda.Starfield
                 }
                 else if (!isBiomeSwapsEqual) return false;
             }
+            if ((equalsMask?.GetShouldTranslate((int)StarfieldMod_FieldIndex.BoneModifiers) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.BoneModifiers, rhs.BoneModifiers, out var lhsBoneModifiers, out var rhsBoneModifiers, out var isBoneModifiersEqual))
+                {
+                    if (!object.Equals(lhsBoneModifiers, rhsBoneModifiers)) return false;
+                }
+                else if (!isBoneModifiersEqual) return false;
+            }
             return true;
         }
         
@@ -3219,6 +3303,7 @@ namespace Mutagen.Bethesda.Starfield
             hash.Add(item.Debris);
             hash.Add(item.ActorValueModulations);
             hash.Add(item.BiomeSwaps);
+            hash.Add(item.BoneModifiers);
             return hash.ToHashCode();
         }
         
@@ -3337,6 +3422,11 @@ namespace Mutagen.Bethesda.Starfield
                 case "IBiomeSwap":
                 case "IBiomeSwapInternal":
                     return obj.BiomeSwaps;
+                case "BoneModifier":
+                case "IBoneModifierGetter":
+                case "IBoneModifier":
+                case "IBoneModifierInternal":
+                    return obj.BoneModifiers;
                 default:
                     return null;
             }
@@ -3362,7 +3452,7 @@ namespace Mutagen.Bethesda.Starfield
                 mod: item,
                 modHeader: item.ModHeader.DeepCopy(),
                 modKey: modKey);
-            Stream[] outputStreams = new Stream[20];
+            Stream[] outputStreams = new Stream[21];
             List<Action> toDo = new List<Action>();
             toDo.Add(() => WriteGroupParallel(item.GameSettings, 0, outputStreams, bundle, parallelParam));
             toDo.Add(() => WriteGroupParallel(item.Keywords, 1, outputStreams, bundle, parallelParam));
@@ -3384,6 +3474,7 @@ namespace Mutagen.Bethesda.Starfield
             toDo.Add(() => WriteGroupParallel(item.Debris, 17, outputStreams, bundle, parallelParam));
             toDo.Add(() => WriteGroupParallel(item.ActorValueModulations, 18, outputStreams, bundle, parallelParam));
             toDo.Add(() => WriteGroupParallel(item.BiomeSwaps, 19, outputStreams, bundle, parallelParam));
+            toDo.Add(() => WriteGroupParallel(item.BoneModifiers, 20, outputStreams, bundle, parallelParam));
             Parallel.Invoke(parallelParam.ParallelOptions, toDo.ToArray());
             PluginUtilityTranslation.CompileStreamsInto(
                 outputStreams.NotNull(),
@@ -3485,6 +3576,13 @@ namespace Mutagen.Bethesda.Starfield
                     yield return item;
                 }
             }
+            if (obj.BoneModifiers is IFormLinkContainerGetter BoneModifierslinkCont)
+            {
+                foreach (var item in BoneModifierslinkCont.EnumerateFormLinks())
+                {
+                    yield return item;
+                }
+            }
             yield break;
         }
         
@@ -3567,6 +3665,10 @@ namespace Mutagen.Bethesda.Starfield
                 yield return item;
             }
             foreach (var item in obj.BiomeSwaps.EnumerateMajorRecords())
+            {
+                yield return item;
+            }
+            foreach (var item in obj.BoneModifiers.EnumerateMajorRecords())
             {
                 yield return item;
             }
@@ -3785,6 +3887,15 @@ namespace Mutagen.Bethesda.Starfield
                         yield return item;
                     }
                     yield break;
+                case "BoneModifier":
+                case "IBoneModifierGetter":
+                case "IBoneModifier":
+                case "IBoneModifierInternal":
+                    foreach (var item in obj.BoneModifiers.EnumerateMajorRecords(type, throwIfUnknown: throwIfUnknown))
+                    {
+                        yield return item;
+                    }
+                    yield break;
                 default:
                     if (InterfaceEnumerationHelper.TryEnumerateInterfaceRecordsFor(GameCategory.Starfield, obj, type, out var linkInterfaces))
                     {
@@ -3986,6 +4097,15 @@ namespace Mutagen.Bethesda.Starfield
                 modKey: obj.ModKey,
                 group: (m) => m.BiomeSwaps,
                 groupGetter: (m) => m.BiomeSwaps))
+            {
+                yield return item;
+            }
+            foreach (var item in InterfaceEnumerationHelper.EnumerateGroupContexts<IStarfieldMod, IStarfieldModGetter, BoneModifier, IBoneModifierGetter>(
+                srcGroup: obj.BoneModifiers,
+                type: typeof(IBoneModifierGetter),
+                modKey: obj.ModKey,
+                group: (m) => m.BoneModifiers,
+                groupGetter: (m) => m.BoneModifiers))
             {
                 yield return item;
             }
@@ -4300,6 +4420,20 @@ namespace Mutagen.Bethesda.Starfield
                         yield return item;
                     }
                     yield break;
+                case "BoneModifier":
+                case "IBoneModifierGetter":
+                case "IBoneModifier":
+                case "IBoneModifierInternal":
+                    foreach (var item in InterfaceEnumerationHelper.EnumerateGroupContexts<IStarfieldMod, IStarfieldModGetter, BoneModifier, IBoneModifierGetter>(
+                        srcGroup: obj.BoneModifiers,
+                        type: type,
+                        modKey: obj.ModKey,
+                        group: (m) => m.BoneModifiers,
+                        groupGetter: (m) => m.BoneModifiers))
+                    {
+                        yield return item;
+                    }
+                    yield break;
                 default:
                     if (InterfaceEnumerationHelper.TryEnumerateInterfaceContextsFor<IStarfieldModGetter, IStarfieldMod, IStarfieldModGetter>(
                         GameCategory.Starfield,
@@ -4390,6 +4524,13 @@ namespace Mutagen.Bethesda.Starfield
                 if (obj.ActorValueModulations is IAssetLinkContainerGetter ActorValueModulationslinkCont)
                 {
                     foreach (var item in ActorValueModulationslinkCont.EnumerateAssetLinks(queryCategories: queryCategories, linkCache: linkCache, assetType: assetType))
+                    {
+                        yield return item;
+                    }
+                }
+                if (obj.BoneModifiers is IAssetLinkContainerGetter BoneModifierslinkCont)
+                {
+                    foreach (var item in BoneModifierslinkCont.EnumerateAssetLinks(queryCategories: queryCategories, linkCache: linkCache, assetType: assetType))
                     {
                         yield return item;
                     }
@@ -4833,6 +4974,26 @@ namespace Mutagen.Bethesda.Starfield
                     errorMask?.PopIndex();
                 }
             }
+            if ((copyMask?.GetShouldTranslate((int)StarfieldMod_FieldIndex.BoneModifiers) ?? true))
+            {
+                errorMask?.PushIndex((int)StarfieldMod_FieldIndex.BoneModifiers);
+                try
+                {
+                    item.BoneModifiers.DeepCopyIn(
+                        rhs: rhs.BoneModifiers,
+                        errorMask: errorMask,
+                        copyMask: copyMask?.GetSubCrystal((int)StarfieldMod_FieldIndex.BoneModifiers));
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
         }
         
         #endregion
@@ -4943,6 +5104,7 @@ namespace Mutagen.Bethesda.Starfield
         public bool Debris;
         public bool ActorValueModulations;
         public bool BiomeSwaps;
+        public bool BoneModifiers;
         public GroupMask()
         {
         }
@@ -4968,6 +5130,7 @@ namespace Mutagen.Bethesda.Starfield
             Debris = defaultValue;
             ActorValueModulations = defaultValue;
             BiomeSwaps = defaultValue;
+            BoneModifiers = defaultValue;
         }
     }
 
@@ -5215,6 +5378,17 @@ namespace Mutagen.Bethesda.Starfield
                 {
                     ((StarfieldGroupBinaryWriteTranslation)((IBinaryItem)BiomeSwapsItem).BinaryWriteTranslator).Write<IBiomeSwapGetter>(
                         item: BiomeSwapsItem,
+                        writer: writer,
+                        translationParams: translationParams);
+                }
+            }
+            if (importMask?.BoneModifiers ?? true)
+            {
+                var BoneModifiersItem = item.BoneModifiers;
+                if (BoneModifiersItem.RecordCache.Count > 0)
+                {
+                    ((StarfieldGroupBinaryWriteTranslation)((IBinaryItem)BoneModifiersItem).BinaryWriteTranslator).Write<IBoneModifierGetter>(
+                        item: BoneModifiersItem,
                         writer: writer,
                         translationParams: translationParams);
                 }
@@ -5559,6 +5733,20 @@ namespace Mutagen.Bethesda.Starfield
                     }
                     return (int)StarfieldMod_FieldIndex.BiomeSwaps;
                 }
+                case RecordTypeInts.BMOD:
+                {
+                    if (importMask?.BoneModifiers ?? true)
+                    {
+                        item.BoneModifiers.CopyInFromBinary(
+                            frame: frame,
+                            translationParams: null);
+                    }
+                    else
+                    {
+                        frame.Position += contentLength;
+                    }
+                    return (int)StarfieldMod_FieldIndex.BoneModifiers;
+                }
                 default:
                     frame.Position += contentLength;
                     return default(int?);
@@ -5829,6 +6017,11 @@ namespace Mutagen.Bethesda.Starfield
         private IStarfieldGroupGetter<IBiomeSwapGetter>? _BiomeSwaps => _BiomeSwapsLocations != null ? StarfieldGroupBinaryOverlay<IBiomeSwapGetter>.StarfieldGroupFactory(_stream, _BiomeSwapsLocations, _package) : default;
         public IStarfieldGroupGetter<IBiomeSwapGetter> BiomeSwaps => _BiomeSwaps ?? new StarfieldGroup<BiomeSwap>(this);
         #endregion
+        #region BoneModifiers
+        private List<RangeInt64>? _BoneModifiersLocations;
+        private IStarfieldGroupGetter<IBoneModifierGetter>? _BoneModifiers => _BoneModifiersLocations != null ? StarfieldGroupBinaryOverlay<IBoneModifierGetter>.StarfieldGroupFactory(_stream, _BoneModifiersLocations, _package) : default;
+        public IStarfieldGroupGetter<IBoneModifierGetter> BoneModifiers => _BoneModifiers ?? new StarfieldGroup<BoneModifier>(this);
+        #endregion
         protected StarfieldModBinaryOverlay(
             IMutagenReadStream stream,
             ModKey modKey,
@@ -6036,6 +6229,12 @@ namespace Mutagen.Bethesda.Starfield
                     _BiomeSwapsLocations ??= new();
                     _BiomeSwapsLocations.Add(new RangeInt64((stream.Position - offset), finalPos - offset));
                     return (int)StarfieldMod_FieldIndex.BiomeSwaps;
+                }
+                case RecordTypeInts.BMOD:
+                {
+                    _BoneModifiersLocations ??= new();
+                    _BoneModifiersLocations.Add(new RangeInt64((stream.Position - offset), finalPos - offset));
+                    return (int)StarfieldMod_FieldIndex.BoneModifiers;
                 }
                 default:
                     return default(int?);

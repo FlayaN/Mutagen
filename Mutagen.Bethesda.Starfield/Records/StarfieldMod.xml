@@ -23,6 +23,7 @@
       <Group name="Debris" refName="Debris" />
       <Group name="ActorValueModulations" refName="ActorValueModulation" />
       <Group name="BiomeSwaps" refName="BiomeSwap" />
+      <Group name="BoneModifiers" refName="BoneModifier" />
     </Fields>
   </Object>
 </Loqui>
